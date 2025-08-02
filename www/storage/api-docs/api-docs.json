@@ -1,0 +1,154 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Documentation",
+        "description": "Description removed for better illustration of structure.",
+        "contact": {
+            "name": "company",
+            "url": "https://example.test",
+            "email": "admin@example.test"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/organizations/by-activity-name/{name}": {
+            "get": {
+                "tags": [
+                    "Organizations"
+                ],
+                "summary": "Список организаций по виду деятельности",
+                "description": "Возвращает список организаций, связанных с указанным видом деятельности (по имени), включая вложенные до 3 уровней",
+                "operationId": "60f04cd3848281f41a44ecaf4d071d35",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Название вида деятельности",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Organization"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Вид деятельности не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Activity not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/example": {
+            "get": {
+                "summary": "Пример получения данных",
+                "operationId": "9acb656493196cfde1526e88510d60a1",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Organization": {
+                "title": "Организация",
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "ООО Рога и Копыта"
+                    },
+                    "building": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "address": {
+                                "type": "string",
+                                "example": "г. Москва, ул. Ленина 1, офис 3"
+                            },
+                            "latitude": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 55.7558
+                            },
+                            "longitude": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 37.6173
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "phones": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "8-923-666-13-13"
+                        }
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "Молочная продукция"
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "name": "X-API-KEY",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Organizations",
+            "description": "API для работы с организациями"
+        }
+    ]
+}

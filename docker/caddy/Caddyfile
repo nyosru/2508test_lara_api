@@ -1,0 +1,17 @@
+(base) {
+	tls internal
+	file_server
+	encode gzip
+}
+
+test.local {
+	import base
+	root * /home/www/public
+	php_fastcgi 2508test:9000
+}
+
+:80, :433 {
+	import base
+	php_fastcgi 2508test:9000
+	root * /home/www/public
+}

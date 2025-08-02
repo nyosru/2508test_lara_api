@@ -1,0 +1,77 @@
+version: '3.8'
+
+networks:
+  laravel:
+
+volumes:
+  caddy_caddyfile:
+
+services:
+
+  caddy:
+    container_name: caddy
+    image: caddy:2.6
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - laravel
+    #        - web2412
+    volumes:
+      - ./caddy/config:/config/caddy
+#      - ./caddy/caddy_caddyfile:/etc/caddy
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+
+      - '${FOLDER_2508TEST}:${FOLDER_2508TEST_SERV}'
+
+    depends_on:
+      - db_mysql
+      - 2508test
+
+  db_mysql:
+    container_name: db_mysql
+    image: mariadb:10.7.8
+    networks:
+      - laravel
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_DB_ROOT_PASSWORD}
+    #      ports:
+    #        - 3306:3306
+    volumes:
+      - '${MYSQL_DB_FOLDER}:/var/lib/mysql'
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db_mysql:db
+    ports:
+      - 6060:80
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_DB_ROOT_PASSWORD}
+      UPLOAD_LIMIT: 300M
+    depends_on:
+      - db_mysql
+    networks:
+      - laravel
+
+  2508test:
+    container_name: 2508test
+    networks:
+      - laravel
+    links:
+      - db_mysql:db
+    build:
+      context: .
+      dockerfile: 2508test.Dockerfile
+    working_dir: ${FOLDER_2508TEST_SERV}
+    environment:
+      - PHPGROUP=www-data
+      - PHPUSER=www-data
+      - FOLDER=${FOLDER_2508TEST_SERV}
+    restart: unless-stopped
+    volumes:
+      - '${FOLDER_2508TEST}:${FOLDER_2508TEST_SERV}'
