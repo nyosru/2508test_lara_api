@@ -15,10 +15,107 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/api-keys": {
+            "get": {
+                "tags": [
+                    "API Keys"
+                ],
+                "summary": "Получить список всех API-ключей",
+                "description": "Возвращает все зарегистрированные API-ключи в системе",
+                "operationId": "838fde81773ad6b4a9f94a94144e6201",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ApiKey"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/api-key/create": {
+            "post": {
+                "tags": [
+                    "API Keys"
+                ],
+                "summary": "Создание нового API ключа",
+                "description": "Создаёт новый API ключ по заданному имени",
+                "operationId": "ca1a111bc9325290dada180801cf2a0e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApiKeyCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "API ключ успешно создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiKeyCreateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "name": [
+                                                    "The name field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/organizations/by-activity-name/{name}": {
             "get": {
                 "tags": [
-                    "Organizations"
+                    "Организации"
                 ],
                 "summary": "Список организаций по виду деятельности",
                 "description": "Возвращает список организаций, связанных с указанным видом деятельности (по имени), включая вложенные до 3 уровней",
@@ -40,10 +137,31 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Organization"
-                                    }
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Organization"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -64,7 +182,90 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/organization/{id}": {
+            "get": {
+                "tags": [
+                    "Организации"
+                ],
+                "summary": "Получаем данные одной органиации по id",
+                "description": "Возвращает данные",
+                "operationId": "a9f5345afd81e9ebac469eb68aff07ca",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id организации",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Organization"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Вид деятельности не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Activity not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
             }
         },
         "/api/example": {
@@ -81,6 +282,56 @@
     },
     "components": {
         "schemas": {
+            "ApiKeyCreateRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "Описание для нового API ключа (например, 'Ключ для тестирования')",
+                        "type": "string",
+                        "example": "Ключ для тестирования"
+                    }
+                },
+                "type": "object"
+            },
+            "ApiKeyCreateResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "API ключ успешно создан"
+                    },
+                    "api_key": {
+                        "description": "Сгенерированный API ключ",
+                        "type": "string",
+                        "example": "XyZ123ABcdEfG456HiJ789KlMnoPqRsTuvWxYz0123456789abcdefghijklmn"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "ApiKey": {
+                "properties": {
+                    "name": {
+                        "description": "название",
+                        "type": "string",
+                        "example": "первый ключ"
+                    },
+                    "api_key": {
+                        "description": "API ключ",
+                        "type": "string",
+                        "example": "XyZ123ABcdEfG456HiJ789KlMnoPqRsTuvWxYz0123456789abcdefghijklmn"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
             "Organization": {
                 "title": "Организация",
                 "required": [
@@ -147,8 +398,12 @@
     },
     "tags": [
         {
-            "name": "Organizations",
-            "description": "API для работы с организациями"
+            "name": "API Keys",
+            "description": "Управление API ключами"
+        },
+        {
+            "name": "Организации",
+            "description": "работа с организациями"
         }
     ]
 }

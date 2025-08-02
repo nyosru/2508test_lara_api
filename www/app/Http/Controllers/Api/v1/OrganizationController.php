@@ -19,25 +19,24 @@ use Illuminate\Http\Request;
  *  )
  *
  * @OA\Tag(
- *     name="Organizations",
- *     description="API для работы с организациями"
+ *     name="Организации",
+ *     description="работа с организациями"
  * )
  */
 class OrganizationController extends Controller
 {
 
-
     /**
      * Получить список организаций, связанных с видом деятельности по имени,
      * включая вложенные виды деятельности (рекурсивно).
      *
-     *     #security={{"ApiKeyAuth":{}}},
      *
      * @OA\Get(
      *      path="/api/organizations/by-activity-name/{name}",
-     *      tags={"Organizations"},
+     *      tags={"Организации"},
      *      summary="Список организаций по виду деятельности",
      *      description="Возвращает список организаций, связанных с указанным видом деятельности (по имени), включая вложенные до 3 уровней",
+     *    security={{"ApiKeyAuth":{}}},
      *      @OA\Parameter(
      *          name="name",
      *          in="path",
@@ -49,8 +48,18 @@ class OrganizationController extends Controller
      *          response=200,
      *          description="Успешный ответ",
      *          @OA\JsonContent(
+     *               @OA\Property(
+     *     property="data",
      *              type="array",
      *              @OA\Items(ref="#/components/schemas/Organization")
+     * )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Пользователь не авторизован",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Unauthorized")
      *          )
      *      ),
      *      @OA\Response(
@@ -67,16 +76,19 @@ class OrganizationController extends Controller
         // Найти деятельность по имени
         try {
             $activity = Activity::where('name', $name)->firstOrFail();
-        }catch ( \Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['message' => 'Activity not found'], 404);
         }
 
         // Получить id деятельности и всех дочерних видов до 3 уровней вложенности
-        $activityIds = $this->getActivityWithChildrenIds($activity);
+//        $activityIds = $this->getActivityWithChildrenIds($activity);
 
         // Получить организации, у которых есть связь с этими видами деятельности
-        $organizations = Organization::whereHas('activities', function($query) use ($activityIds) {
-            $query->whereIn('activities.id', $activityIds);
+        $organizations = Organization::whereHas('activities', function ($query)
+//        use ($activityIds)
+        use ($name) {
+//            $query->whereIn('activities.id', $activityIds);
+            $query->where('activities.name', $name);
         })->with(['building', 'phones', 'activities'])->get();
 
         return OrganizationResource::collection($organizations);
@@ -115,12 +127,60 @@ class OrganizationController extends Controller
         //
     }
 
+
     /**
-     * Display the specified resource.
+     * Получить список организаций, связанных с видом деятельности по имени,
+     * включая вложенные виды деятельности (рекурсивно).
+     *
+     *
+     * @OA\Get(
+     *      path="/api/organization/{id}",
+     *      tags={"Организации"},
+     *      summary="Получаем данные одной органиации по id",
+     *      description="Возвращает данные",
+     *    security={{"ApiKeyAuth":{}}},
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="id организации",
+     *          required=true,
+     *          @OA\Schema(type="number")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Успешный ответ",
+     *          @OA\JsonContent(
+     *     @OA\Property(
+     *      property="data",
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/Organization")
+     *          )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Пользователь не авторизован",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Unauthorized")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Вид деятельности не найден",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Activity not found")
+     *          )
+     *      )
+     *  )
      */
     public function show(string $id)
     {
-        //
+        try {
+            $organization = Organization::with(['building', 'phones', 'activities'])->whereId($id)->firstOrFail();
+            return OrganizationResource::collection([$organization]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Organization not found'], 404);
+        }
     }
 
     /**
