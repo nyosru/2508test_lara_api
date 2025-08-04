@@ -1,7 +1,15 @@
 # как запустить эту штуку
 
-
-
+команды в терминале
+```
+git clone https://github.com/nyosru/2508test_lara_api
+cd 2508test_lara_api
+make start
+```
+АПИ со свагером лежит тут, кликайте
+```
+http://localhost/api/documentation
+```
 # Тестовое задание "Создание REST API приложения"
 
 ## Описание.
