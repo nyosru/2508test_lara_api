@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-
 /**
  * @OA\Info(
- *      version="1.0.0",
- *      title="API Documentation",
- *      description="Description removed for better illustration of structure.",
+ *      version="1.0.1",
+ *      title="Тест задание API",
+ *      description="Созданы несколько методов для работы с данными: организациии, адреса, типы деятельности ( github проекта, ознакомится с заданием и кодом > <a href='https://github.com/nyosru/2508test_lara_api' target='_blank'>https://github.com/nyosru/2508test_lara_api</a> )",
  *      @OA\Contact(
- *          email="admin@example.test",
- *          name="company",
- *          url="https://example.test"
+ *          email="1@php-cat.com",
+ *          name="Сергей Бакланов",
+ *          url="https://php-cat.com"
  *      ),
  *      @OA\License(
  *          name="Apache 2.0",

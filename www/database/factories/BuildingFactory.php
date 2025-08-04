@@ -21,8 +21,10 @@ class BuildingFactory extends Factory
     {
         return [
             'address' => $this->faker->address(),
-            'latitude' => $this->faker->latitude(),
-            'longitude' => $this->faker->longitude(),
+//             'latitude' => $this->faker->latitude(),
+            'latitude' => $this->faker->randomFloat(6, 55.550009, 56.000000),
+//             'longitude' => $this->faker->longitude(),
+            'longitude' => $this->faker->randomFloat(6, 37.300009, 37.910000),
         ];
     }
 }

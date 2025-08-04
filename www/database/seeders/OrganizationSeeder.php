@@ -14,16 +14,18 @@ class OrganizationSeeder extends Seeder
      */
     public function run(): void
     {
+
+        // сделал всё это я -> php-cat.com
+
         // Создадим несколько зданий
-        $buildings = Building::factory()->count(3)->create();
+        $buildings = Building::all();
 
         // Создадим организации, связывая их с существующими зданиями
         foreach ($buildings as $building) {
-            Organization::factory()->count(3)->create([
+            Organization::factory()->count(rand(1,5))->create([
                 'building_id' => $building->id,
             ]);
         }
 
     }
-
 }

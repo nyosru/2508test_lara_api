@@ -19,15 +19,19 @@ class OrganizationActivitySeeder extends Seeder
         $organizations = Organization::all();
 
         foreach ($organizations as $organization) {
+
             // Каждая организация связана с 1-3 случайными деятельностями
             $randomActivityIds = $activities->random(rand(1,3))->pluck('id')->toArray();
 
             foreach ($randomActivityIds as $activityId) {
+                try{
                 DB::table('organization_activities')->insert([
                     'organization_id' => $organization->id,
                     'activity_id' => $activityId,
                 ]);
+                } catch (\Exception $e) {}
             }
+
         }
     }
 }

@@ -1,18 +1,18 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API Documentation",
-        "description": "Description removed for better illustration of structure.",
+        "title": "Тест задание API",
+        "description": "Созданы несколько методов для работы с данными: организациии, адреса, типы деятельности ( github проекта, ознакомится с заданием и кодом > <a href='https://github.com/nyosru/2508test_lara_api' target='_blank'>https://github.com/nyosru/2508test_lara_api</a> )",
         "contact": {
-            "name": "company",
-            "url": "https://example.test",
-            "email": "admin@example.test"
+            "name": "Сергей Бакланов",
+            "url": "https://php-cat.com",
+            "email": "1@php-cat.com"
         },
         "license": {
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "1.0.0"
+        "version": "1.0.1"
     },
     "paths": {
         "/api/api-keys": {
@@ -112,14 +112,14 @@
                 }
             }
         },
-        "/api/organizations/by-activity-name/{name}": {
+        "/api/organization/by-activity-name/{name}": {
             "get": {
                 "tags": [
                     "Организации"
                 ],
                 "summary": "Список организаций по виду деятельности",
                 "description": "Возвращает список организаций, связанных с указанным видом деятельности (по имени), включая вложенные до 3 уровней",
-                "operationId": "60f04cd3848281f41a44ecaf4d071d35",
+                "operationId": "6cd41453541e7f9765587b9c9ba22a07",
                 "parameters": [
                     {
                         "name": "name",
@@ -131,6 +131,229 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Organization"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Вид деятельности не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Activity not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/organization/by-name": {
+            "post": {
+                "tags": [
+                    "Организации"
+                ],
+                "summary": "поиск организации по названию",
+                "description": "Возвращает список организаций",
+                "operationId": "7f1bf399a83253aa80643cb07ab272f6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "address"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Название",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Organization"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Вид деятельности не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Activity not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/organization": {
+            "get": {
+                "tags": [
+                    "Организации"
+                ],
+                "summary": "Получить список всех организаций",
+                "description": "Возвращает список организаций",
+                "operationId": "e29b43dd6fb11bf0b8b1c538e8db46ea",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Organization"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/organization/by-address": {
+            "post": {
+                "tags": [
+                    "Организации"
+                ],
+                "summary": "Список организаций по виду деятельности",
+                "description": "Возвращает список организаций, связанных с указанным видом деятельности (по имени), включая вложенные до 3 уровней",
+                "operationId": "85e363aaa7068a8fa7e28cc3243394eb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "address"
+                                ],
+                                "properties": {
+                                    "address": {
+                                        "description": "Адрес здания",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Успешный ответ",
@@ -253,6 +476,107 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Activity not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/organization/by-location": {
+            "post": {
+                "tags": [
+                    "Организации"
+                ],
+                "summary": "Получить организации по местоположению здания в квадрате вокруг точки",
+                "description": "Возвращает организации, чьи здания находятся в квадрате вокруг указанной гео-точки с заданным радиусом (в километрах)",
+                "operationId": "b2bd7e3b2775d488d25aa689f64f1ad5",
+                "requestBody": {
+                    "description": "Координаты точки и радиус",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "latitude",
+                                    "longitude",
+                                    "radiusKm"
+                                ],
+                                "properties": {
+                                    "latitude": {
+                                        "description": "Широта в градусах",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 55.751244
+                                    },
+                                    "longitude": {
+                                        "description": "Долгота в градусах",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 37.618423
+                                    },
+                                    "radiusKm": {
+                                        "description": "Радиус квадрата в километрах",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Список организаций в указанном квадрате",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Organization"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "latitude": [
+                                                    "The latitude field is required."
+                                                ],
+                                                "longitude": [
+                                                    "The longitude field is required."
+                                                ],
+                                                "radiusKm": [
+                                                    "The radiusKm field is required."
+                                                ]
+                                            }
                                         }
                                     },
                                     "type": "object"
