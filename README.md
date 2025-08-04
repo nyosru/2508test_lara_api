@@ -10,6 +10,11 @@ make start
 ```
 http://localhost/api/documentation
 ```
+phpMyAdmin посмотреть бд ( root и пароль 123123123 )
+```
+http://localhost:6060
+```
+
 # Тестовое задание "Создание REST API приложения"
 
 ## Описание.

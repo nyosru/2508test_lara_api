@@ -2,8 +2,8 @@ start:
 	cd docker && cp .env.example .env
 	docker-compose -f docker/docker-compose.yml up -d --build
 	docker exec 2508test cp .env.example .env
-	docker exec 2508test php artisan key:generate
 	docker exec 2508test composer i
+	docker exec 2508test php artisan key:generate
 	docker exec 2508test php artisan migrate --seed
 
 restart:
