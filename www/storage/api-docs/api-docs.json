@@ -591,17 +591,6 @@
                     }
                 ]
             }
-        },
-        "/api/example": {
-            "get": {
-                "summary": "Пример получения данных",
-                "operationId": "9acb656493196cfde1526e88510d60a1",
-                "responses": {
-                    "200": {
-                        "description": "Успешный ответ"
-                    }
-                }
-            }
         }
     },
     "components": {
